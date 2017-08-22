@@ -1,5 +1,24 @@
 # tasks file for postfix
 ---
+- name: determine Linux distribution
+  set_fact:
+    postfix_debian: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+    postfix_redhat: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+    
+- name: fail if unknown distribution
+  fail: msg='neither Debian/Ubuntu nor Redhat/CentOS detected'
+  when: not postfix_debian and not postfix_redhat
+    
+- name: set package list
+  set_fact:
+    postfix_install: '{{ postfix_install_debian }}'
+  when: postfix_debian and postfix_install is not defined
+
+- name: set package list
+  set_fact:
+    postfix_install: '{{ postfix_install_redhat }}'
+  when: postfix_redhat and postfix_install is not defined
+
 - name: configure debconf
   debconf:
     name: "{{ item.name }}"
@@ -7,6 +26,7 @@
     value: "{{ item.value }}"
     vtype: "{{ item.vtype }}"
   with_items: "{{ postfix_debconf_selections }}"
+  when: postfix_debian
   tags:
     - configuration
     - postfix
@@ -18,7 +38,20 @@
     state: "{{ apt_install_state | default('latest') }}"
     update_cache: true
     cache_valid_time: "{{ apt_update_cache_valid_time | default(3600) }}"
-  with_items: "{{ postfix_install }}"
+  with_items: "{{ postfix_install_debian }}"
+  when: postfix_debian
+  tags:
+    - configuration
+    - postfix
+    - postfix-install
+
+- name: install package
+  yum:
+    name: "{{ item }}"
+    state: "{{ yum_install_state | default('latest') }}"
+    update_cache: true
+  with_items: "{{ postfix_install_redhat }}"
+  when: postfix_redhat
   tags:
     - configuration
     - postfix
@@ -32,6 +65,7 @@
     group: root
     mode: 0644
   notify: restart postfix
+  when: postfix_debian
   tags:
     - configuration
     - postfix

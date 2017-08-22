@@ -2,10 +2,14 @@
 
 # See /usr/share/postfix/main.cf.dist for a commented, more complete version
 
+{% if postfix_debian == true %}
 # Debian specific:  Specifying a file name will cause the first
 # line of that file to be used as the name.  The Debian default
 # is /etc/mailname.
 myorigin = /etc/mailname
+{% else %}
+myorigin = {{ postfix_mailname }}
+{% endif %}
 
 smtpd_banner = {{ postfix_smtpd_banner }}
 biff = no
@@ -67,3 +71,12 @@ message_size_limit = {{  postfix_message_size_limit }}
 
 # Disable the SMTP VRFY command. This stops some techniques used to harvest email addresses.
 disable_vrfy_command = {{ postfix_disable_vrfy_command | bool | ternary('yes', 'no') }}
+
+{% if postfix_masquerade_domains %}
+masquerade_domains = {{ postfix_masquerade_domains | join(', ') }}
+masquerade_classes = envelope_sender,header_sender
+{% endif %}
+
+{% if postfix_mailbox_command %}
+mailbox_command = {{ postfix_mailbox_command }}
+{% endif %}
