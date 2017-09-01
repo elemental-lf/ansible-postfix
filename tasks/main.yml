@@ -153,6 +153,34 @@
     - postmap sender_canonical_maps
     - restart postfix
 
+- name: install TLS certificate and key
+  block:
+    - name: ensure that directory structure exists
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+        recurse: yes
+      with_items:
+        - '/etc/pki/postfix/certs'
+        - '/etc/pki/postfix/private'
+    - name: copy TLS certificate
+      copy:
+        src: '{{ postfix_smtpd_tls_cert_file }}'
+        dest: '/etc/pki/postfix/certs/{{ ansible_nodename }}.crt'
+        owner: 'root'
+        group: 'root'
+        mode: '0644'
+    - name: copy TLS key
+      copy:
+        src: '{{ postfix_smtpd_tls_key_file }}'
+        dest: '/etc/pki/postfix/private/{{ ansible_nodename }}.key'
+        owner: 'root'
+        group: 'root'
+        mode: '0400'
+  when: postfix_smtpd_tls_cert_file is defined and postfix_smtpd_tls_key_file is defined
+
+
 - name: start and enable service
   service:
     name: postfix
