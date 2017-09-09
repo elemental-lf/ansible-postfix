@@ -173,12 +173,12 @@
         mode: '0644'
     - name: copy TLS key
       copy:
-        content: '{{ postfix_smtpd_tls_key }}'
+        src: '{{ postfix_smtpd_tls_key_file }}'
         dest: '/etc/pki/postfix/private/{{ ansible_nodename }}.key'
         owner: 'root'
         group: 'root'
         mode: '0400'
-  when: postfix_smtpd_tls_cert_file is defined and postfix_smtpd_tls_key is defined
+  when: postfix_smtpd_tls_cert_file is defined and postfix_smtpd_tls_key_file is defined
 
 
 - name: start and enable service

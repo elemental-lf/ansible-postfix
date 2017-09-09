@@ -25,10 +25,6 @@ Thumbs.db
 vagrant_ansible_inventory_*
 ansible.cfg
 
-# Backup files #
-################
-*~
-
 # Other files #
 ###############
 !empty
