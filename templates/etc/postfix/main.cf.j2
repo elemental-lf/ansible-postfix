@@ -23,7 +23,7 @@ append_dot_mydomain = no
 readme_directory = no
 
 # TLS parameters
-{% if postfix_smtpd_tls_cert_file is defined and postfix_smtpd_tls_key_file is defined %}
+{% if postfix_smtpd_tls_cert_file is defined and postfix_smtpd_tls_key is defined %}
 smtpd_tls_cert_file = /etc/pki/postfix/certs/{{ ansible_nodename }}.crt
 smtpd_tls_key_file = /etc/pki/postfix/private/{{ ansible_nodename }}.key
 smtpd_tls_security_level = may
