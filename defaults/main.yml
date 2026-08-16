@@ -9,6 +9,8 @@ postfix_install_debian:
 postfix_install_redhat:
   - postfix
   - cyrus-sasl-plain
+  - postfix-lmdb
+  - postfix-cdb
 postfix_hostname: "{{ ansible_fqdn }}"
 postfix_mailname: "{{ ansible_fqdn }}"
 postfix_aliases: []
