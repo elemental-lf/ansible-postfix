@@ -3,7 +3,7 @@
 - name: determine Linux distribution
   set_fact:
     postfix_debian: "{{ ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu' }}"
-    postfix_redhat: "{{ ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' }}"
+    postfix_redhat: "{{ ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'AlmaLinux' or  ansible_distribution == 'Fedora'}}"
     
 - name: fail if unknown distribution
   fail: msg='neither Debian/Ubuntu nor Redhat/CentOS detected'
