@@ -28,20 +28,20 @@ smtpd_tls_cert_file = /etc/pki/postfix/certs/{{ ansible_nodename }}.crt
 smtpd_tls_key_file = /etc/pki/postfix/private/{{ ansible_nodename }}.key
 smtpd_tls_security_level = may
 {% endif %}
-smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
-smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtpd_tls_session_cache_database = lmdb:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = lmdb:${data_directory}/smtp_scache
 
 # See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
 # information on enabling SSL in the smtp client.
 
 myhostname = {{ postfix_hostname }}
-alias_maps = hash:/etc/aliases
-alias_database = hash:/etc/aliases
+alias_maps = cdb:/etc/aliases
+alias_database = cdb:/etc/aliases
 {% if postfix_virtual_aliases %}
-virtual_alias_maps = hash:/etc/postfix/virtual
+virtual_alias_maps = cdb:/etc/postfix/virtual
 {% endif %}
 {% if postfix_sender_canonical_maps %}
-sender_canonical_maps = hash:/etc/postfix/sender_canonical_maps
+sender_canonical_maps = cdb:/etc/postfix/sender_canonical_maps
 {% endif %}
 mydestination = {{ postfix_mydestination | join(', ') }}
 mynetworks = {{ postfix_mynetworks | join(' ') }}
@@ -54,7 +54,7 @@ inet_protocols = {{ postfix_inet_protocols }}
 relayhost = [{{ postfix_relayhost }}]:{{ postfix_relayhost_port }}
 {% if postfix_sasl_auth_enable %}
 smtp_sasl_auth_enable = {{ postfix_sasl_auth_enable | bool | ternary('yes', 'no') }}
-smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_password_maps = cdb:/etc/postfix/sasl_passwd
 smtp_sasl_security_options = {{ postfix_sasl_security_options }}
 {% endif %}
 {% if postfix_relaytls %}
@@ -82,3 +82,5 @@ masquerade_classes = envelope_sender,header_sender
 {% if postfix_mailbox_command is defined %}
 mailbox_command = {{ postfix_mailbox_command }}
 {% endif %}
+
+default_database_type = lmdb
