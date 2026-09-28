@@ -9,10 +9,10 @@
   command: newaliases
 
 - name: new virtual aliases
-  command: postmap /etc/postfix/virtual
+  command: postmap {{ postfix_database_type_tables }}:/etc/postfix/virtual
 
 - name: postmap sasl_passwd
-  command: postmap cdb:/etc/postfix/sasl_passwd
+  command: postmap {{ postfix_database_type_tables }}:/etc/postfix/sasl_passwd
 
 - name: postmap sender_canonical_maps
-  command: postmap cdb:/etc/postfix/sender_canonical_maps
+  command: postmap {{ postfix_database_type_tables }}:/etc/postfix/sender_canonical_maps

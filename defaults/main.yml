@@ -1,16 +1,23 @@
 # defaults file for postfix
 ---
-postfix_install_debian:
-  - postfix
-  - mailutils
-  - libsasl2-2
-  - sasl2-bin
-  - libsasl2-modules
-postfix_install_redhat:
-  - postfix
-  - cyrus-sasl-plain
-  - postfix-lmdb
-  - postfix-cdb
+# Database type for lookup tables which are only read at run-time and always
+# rebuilt as a whole (aliases, virtual, canonical maps, sasl_passwd, ...)
+postfix_database_type_tables: cdb
+# Database type for databases which are updated at run-time by postfix itself
+# (TLS session caches, ...)
+postfix_database_type_caches: lmdb
+postfix_install_debian: >-
+  {{
+    ['postfix', 'mailutils', 'libsasl2-2', 'sasl2-bin', 'libsasl2-modules']
+    + (['postfix-lmdb'] if 'lmdb' in [postfix_database_type_tables, postfix_database_type_caches] else [])
+    + (['postfix-cdb'] if 'cdb' in [postfix_database_type_tables, postfix_database_type_caches] else [])
+  }}
+postfix_install_redhat: >-
+  {{
+    ['postfix', 'cyrus-sasl-plain']
+    + (['postfix-lmdb'] if 'lmdb' in [postfix_database_type_tables, postfix_database_type_caches] else [])
+    + (['postfix-cdb'] if 'cdb' in [postfix_database_type_tables, postfix_database_type_caches] else [])
+  }}
 postfix_install_enabled: true
 postfix_hostname: "{{ ansible_fqdn }}"
 postfix_mailname: "{{ ansible_fqdn }}"

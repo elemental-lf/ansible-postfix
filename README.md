@@ -11,6 +11,8 @@ None
 #### Variables
 
  * `postfix_install` [default: `[postfix, mailutils, libsasl2-2, sasl2-bin, libsasl2-modules]`]: Packages to install
+ * `postfix_database_type_tables` [default: `cdb`]: Database type ([see](http://www.postfix.org/DATABASE_README.html)) for lookup tables which are only read at run-time and always rebuilt as a whole (`alias_maps`, `virtual_alias_maps`, `sender_canonical_maps`, `smtp_sasl_password_maps` and `default_database_type`)
+ * `postfix_database_type_caches` [default: `lmdb`]: Database type for databases updated at run-time by postfix itself (the SMTP/SMTPD TLS session caches)
  * `postfix_hostname` [default: `{{ ansible_fqdn }}`]: Host name, used for `myhostname` and in `mydestination`
  * `postfix_mailname` [default: `{{ ansible_fqdn }}`]: Mail name (in `/etc/mailname`), used for `myorigin`
  * `postfix_aliases` [default: `[]`]: Aliases to ensure present in `/etc/aliases`
