@@ -11,6 +11,7 @@ postfix_install_redhat:
   - cyrus-sasl-plain
   - postfix-lmdb
   - postfix-cdb
+postfix_install_enabled: true
 postfix_hostname: "{{ ansible_fqdn }}"
 postfix_mailname: "{{ ansible_fqdn }}"
 postfix_aliases: []
